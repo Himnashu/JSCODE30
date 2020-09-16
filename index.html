@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Drum Set</title>
+    <!-- <script src='polifil_call.js'></script> -->
+    <script src="p5.min.js"></script>
+    <script src="vanta.topology.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .drum {
+            position: absolute;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            align-items: center;
+        }
+
+        .drum-img {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .crash {
+            left: 9%;
+            position: absolute;
+            top: 21%;
+            transform: rotate(-8deg);
+            width: 15vw;
+            transition: 0.1s ease-in-out all;
+
+        }
+
+        .top {
+
+            width: 14vw;
+            right: 8.25%;
+            position: absolute;
+            top: 30%;
+        }
+
+        .right-stick {
+            width: 150px;
+    transform: rotate(-108deg);
+    position: absolute;
+    top: 45px;
+    left: -28px;
+            transition: .2s ease-in-out all;
+        }
+
+        .left-stick {
+            width: 150px;
+            transform: rotate(-67deg);
+            position: absolute;
+            top: 45px;
+            left: -71px;
+            transition: .2s ease-in-out all;
+        }
+
+        .drum-main {
+
+            width: 50vw;
+
+        }
+
+        .button {
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: black;
+            font-family: cursive;
+            background: #d2d2d2;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: .1s ease-in-out all;
+        }
+
+        .button:hover {
+            border: 1px solid #d2d2d2;
+
+        }
+
+        .playing {
+            border: 1px solid #d2d2d2;
+        }
+
+        .crash-b {
+            left: 13%;
+            top: 16%;
+        }
+
+        .ride {
+            left: 28%;
+            top: 16%;
+        }
+
+        .hi-Hat-Open {
+            right: 28%;
+            top: 27%;
+            left: unset;
+
+        }
+
+        .hi-Hat-Closed {
+            right: 11%;
+            top: 27%;
+            left: unset;
+        }
+
+        .floor {
+            top: 46%;
+            left: 20%;
+
+        }
+
+        .mid {
+
+            top: 30%;
+            left: 37%;
+
+        }
+
+        .high {
+            top: 34%;
+            left: 55%;
+        }
+
+        .snare {
+            top: 43%;
+            left: 67%;
+        }
+
+        .kick {
+            top: 67%;
+            left: 43%;
+
+        }
+        .name{
+            position: absolute;
+    z-index: 1111;
+    right: 5%;
+    bottom: 5%;
+    font-size: 20px;
+    background: -webkit-linear-gradient(#e35d83, #c8adad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: cursive;
+        }
+        .name a{
+            color: #e35d83;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="drum">
+        <div class="drum-img">
+            <img class="drum-main" src="img/drum-kit.png">
+            <img class="crash" src="img/crash.png">
+            <img class="top" src="img/hihat-top.png">
+            <div class="button crash-b" data-key="69">E</div>
+            <div class="button ride" data-key="82">R</div>
+            <div class="button hi-Hat-Open" data-key="73">I</div>
+            <div class="button hi-Hat-Closed" data-key="75">K</div>
+            <div class="button floor" data-key="70">F</div>
+            <div class="button mid" data-key="71">G</div>
+            <div class="button high" data-key="72">H</div>
+            <div class="button snare" data-key="74">J</div>
+            <div class="button kick" data-key="32">&#9251; Space <img class="left-stick" src="img/stick.png">
+                <img class="right-stick" src="img/stick.png">
+            </div>
+        </div>
+   
+        <audio data-key="74" src="/sounds/snare.wav"></audio>
+        <audio data-key="32" src="/sounds/kick.wav"></audio>
+        <audio data-key="72" src="/sounds/tom-high.wav"></audio>
+        <audio data-key="71" src="/sounds/tom-mid.wav"></audio>
+        <audio data-key="70" src="/sounds/tom-low.wav"></audio>
+        <audio data-key="69" src="/sounds/crash.wav"></audio>
+        <audio data-key="82" src="/sounds/ride.wav"></audio>
+        <audio data-key="73" src="/sounds/hihat-open.wav"></audio>
+        <audio data-key="75" src="/sounds/hihat-close.wav"></audio>
+
+    </div>
+    <div class="name">
+        Made with &hearts; by <a href="https://www.linkedin.com/in/hdsatija/">Himanshu Satija</a>
+    </div>
+    <div id="background">
+    </div>
+</body>
+
+
+<script>
+    let height = window.innerHeight;
+    VANTA.TOPOLOGY({
+        el: "#background",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: height,
+        minWidth: 200.00,
+        scale: 1.00,
+        scaleMobile: 1.00,
+        color: 0x964e63,
+        backgroundColor: 0x50a1e
+    })
+
+    playSound = (e) => {
+        let leftStick = document.querySelector('.left-stick');
+        let rightStick = document.querySelector('.right-stick');
+        moveTop = (dir) => {
+            console.log(dir);
+            console.log(leftStick);
+            let crash = document.getElementsByClassName('crash');
+            if (dir == "right") {
+                let count=0
+                    let clearTimeInterval= setInterval(()=>{
+                        count++
+                        if(count>3){
+                        clearInterval(clearTimeInterval);
+                    }
+                    crash[0].style.transform = " rotate(-16deg) ";
+                setTimeout(() => {
+                    crash[0].style.transform = " rotate(-12deg)"
+                }, 10);
+                setTimeout(() => {
+                    crash[0].style.transform = " rotate(-8deg)"
+                }, 40);
+                        
+                    }, 100);
+               
+            } else {
+                if (dir == "left") {
+                    crash[0].style.transform = " rotate(0deg) "
+                    setTimeout(() => {
+                        crash[0].style.transform = " rotate(-8deg)"
+                    }, 100)
+                } else {
+                    console.log('hhhhh');
+                    let top = document.getElementsByClassName('top');
+                    let count=0
+                    let clearTimeInterval= setInterval(()=>{
+                        count++
+                        if(count>3){
+                        clearInterval(clearTimeInterval);
+                    }
+                        console.log(count)
+                        top[0].style.top="31%";
+                        setTimeout(() => {
+                            top[0].style.top="30%";
+                        }, 10);
+                    }, 100);
+                    
+                    
+                }
+            }
+        }
+        let key = '';
+        if (e.type == 'click') {
+            e = e || window.event;
+            let target = e.target || e.srcElement,
+                text = target.textContent || target.innerText;
+                key = Number(target.dataset.key);
+        } else {
+            key = e.keyCode;
+        }
+        console.log("key", key)
+        let keyElement = document.querySelectorAll(`div[data-key="${key}"]`);
+        console.log("key", keyElement.length);
+        if(keyElement.length==0){
+            return 0;
+        }
+        if(key==69 || key==82 || key==70 || key==71  ){
+            keyElement[0].append(leftStick);
+        }else{
+            if(key==32){
+                keyElement[0].append(leftStick);
+                keyElement[0].append(rightStick);
+            }else{
+                keyElement[0].append(rightStick);
+
+            }
+        }
+        let keyAudio = document.querySelector(`audio[data-key="${key}"]`);
+        keyAudio.currentTime = 0;
+        switch (key) {
+            case 82: this.moveTop('left');
+                break;
+            case 69: this.moveTop('right');
+                break;
+            case 73: this.moveTop('top');
+                break;
+            case 75: this.moveTop('top');
+                break;
+            default: {
+
+            }
+        }
+        keyAudio.play();
+
+    }
+    window.addEventListener('keydown', playSound);
+    window.addEventListener('click', playSound);
+
+</script>
+
+</html>
