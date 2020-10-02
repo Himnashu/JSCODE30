@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Clock</title>
+    <!-- <script src='polifil_call.js'></script> -->
+    <script src="p5.min.js"></script>
+    <script src="vanta.topology.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        .name{
+            position: absolute;
+            z-index: 1111;
+            right: 5%;
+            bottom: 5%;
+            font-size: 20px;
+            background: -webkit-linear-gradient(#e35d83, #c8adad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: cursive;
+        }
+        .name a{
+            color: #e35d83;
+        }
+        .circle{
+            height: 300px;
+            width: 300px;
+            position: absolute;
+            z-index: 2;
+            border: 2px solid #d2d2d2;
+            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            transform: translateX(-50%) translateY(-50%);
+        }
+        .hand{
+            position: absolute;
+            z-index: 3;
+            background: #7d2b48;
+            width: 50%;
+            height: 4px;
+            top: 50%;
+            border-radius: 10px;
+            transform-origin: right;
+            transition: .25s all ease-in-out;
+            transform: rotateZ(90deg);
+        }
+        .hour{
+            width: 40%;
+            left: 10%;
+            transform-origin: 100%;
+        }
+        .sec{
+            transition: .25s all ease-in-out;
+            transform-origin: 100%;
+        }
+        .min{
+            width: 45%;
+            left: 5%;
+            transform-origin: 100%;
+        }
+        .ref{
+            position: absolute;
+            z-index: 2;
+            width: 2px;
+            height: 93%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-top: 10px solid #ffff;
+            border-bottom: 10px solid #ffff;
+        }
+        .one{
+            transform: rotate(30deg);
+        }
+        .two{
+            transform: rotate(60deg);
+        }
+        .three{
+            transform: rotate(90deg);
+        }
+        .four{
+            transform: rotate(120deg);
+        }
+        .five{
+            transform: rotate(150deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="circle">
+        <div class="clock"></div>
+        <div class="hand hour"></div>
+        <div class="hand min"></div>
+        <div class="hand sec"></div>
+        <div class="ref zero"></div>
+        <div class="ref one"></div>
+        <div class="ref two"></div>
+        <div class="ref three"></div>
+        <div class="ref four"></div>
+        <div class="ref five"></div>
+        <div class="ref six"></div>
+    </div>
+    <div class="name">
+        Made with &hearts; by <a href="https://www.linkedin.com/in/hdsatija/">Himanshu Satija</a>
+    </div>
+    <div id="background">
+    </div>
+</body>
+
+
+<script>
+    let height = window.innerHeight;
+    VANTA.TOPOLOGY({
+        el: "#background",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: height,
+        minWidth: 200.00,
+        scale: 1.00,
+        scaleMobile: 1.00,
+        color: 0x964e63,
+        backgroundColor: 0x50a1e
+    })
+    const secondHand = document.querySelector('.sec');
+  const minsHand = document.querySelector('.min');
+  const hourHand = document.querySelector('.hour');
+
+  function setDate() {
+    const now = new Date();
+
+    const seconds = now.getSeconds();
+    const secondsDegrees = ((seconds / 60) * 360);
+    secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+
+    const mins = now.getMinutes();
+    const minsDegrees = ((mins / 60) * 360) + ((seconds/60)*6) + 90;
+    minsHand.style.transform = `rotate(${minsDegrees}deg)`;
+
+    const hour = now.getHours();
+    const hourDegrees = ((hour / 12) * 360) + ((mins/60)*30) + 90;
+    hourHand.style.transform = `rotate(${hourDegrees}deg)`;
+  }
+
+  setInterval(setDate, 1000);
+
+  setDate();
+</script>
+
+</html>

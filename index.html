@@ -274,9 +274,7 @@
         } else {
             key = e.keyCode;
         }
-        console.log("key", key)
         let keyElement = document.querySelectorAll(`div[data-key="${key}"]`);
-        console.log("key", keyElement.length);
         if(keyElement.length==0){
             return 0;
         }
